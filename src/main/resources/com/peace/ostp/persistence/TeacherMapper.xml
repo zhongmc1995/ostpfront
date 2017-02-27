@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.peace.ostp.persistence.TeacherMapper">
+ 	<!-- mybatis 一对多的映射 -->
+	<resultMap id = "CourseResultMap" type="com.peace.ostp.domain.Course" >
+		<id property="ID" column="courseID"/>
+		<result property="name" column="courseName"/>
+		<result property="desc" column="description"/>
+		<result property="teacherID" column="ID"/>
+	</resultMap>
+	
+	<resultMap id="TeacherWithCourseResultMap" type="com.peace.ostp.domain.Teacher" >
+		<id property="ID" column="ID"/>
+		<result property="name" column="name"/>
+		<result property="email" column="email"/>
+		<result property="phone" column="phone"/>
+		<collection property = "courses" resultMap = "CourseResultMap"/>
+	</resultMap>
+	
+	<select id="getTeacherWithCourseByID" parameterType="int" resultMap="TeacherWithCourseResultMap"> 
+    	SELECT T.ID, T.name, email, phone, C.ID as courseID, C.name as courseName, description 
+  		FROM Teacher T 
+  		LEFT OUTER JOIN Course C 
+  		ON T.ID = C.teacherID
+  		WHERE T.ID = #{ID}
+  	</select>
+</mapper> 
